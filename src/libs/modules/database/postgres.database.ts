@@ -13,7 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         database: process.env.DATABASE_NAME || 'postgres',
         synchronize: true,
         entities: [`${__dirname}/**/*.entity.{ts,js}`],
-        logging: false,
+        logging: true,
         migrations: ['src/db/migrations/**/*.migration{.ts,.js}'],
         autoLoadEntities: true,
         timezone: 'Asia/Ho_Chi_Minh',

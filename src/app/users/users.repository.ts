@@ -5,7 +5,8 @@ import { Repository } from 'typeorm';
 
 export class UsersRepository extends AbstractRepository<User> {
   constructor(
-    @InjectRepository(User) protected readonly userRepository: Repository<User>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {
     super(userRepository);
   }

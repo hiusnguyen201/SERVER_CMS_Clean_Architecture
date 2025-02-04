@@ -1,9 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { validate as isValidUUID } from 'uuid';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { FindOptionsWhere, ILike } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -13,7 +8,7 @@ import { SELECTED_USER_FIELDS } from './users.constant';
 import { GetUsersDto } from './dto/get-users.dto';
 import { PaginateData } from 'src/libs/abstract/abstract.repository';
 import { UsersRepository } from './users.repository';
-import { orderedObject } from 'src/libs/utils/common.util';
+import { sortedStringify } from 'src/libs/utils/common.util';
 import { RedisService } from 'src/libs/modules/redis/redis.service';
 
 @Injectable()
@@ -36,11 +31,13 @@ export class UsersService {
       verifiedAt: null,
     });
 
-    return this.usersRepository.save(user);
+    await this.usersRepository.save(user);
+
+    return this.findOneById(user.id);
   }
 
   async findAll(query: GetUsersDto): Promise<PaginateData<User>> {
-    const cacheKey = `CACHED:USERS:${JSON.stringify(orderedObject(query))}`;
+    const cacheKey = `CACHED:USERS:${sortedStringify(query)}`;
 
     const cachedData =
       await this.redisService.get<PaginateData<User>>(cacheKey);
@@ -64,31 +61,27 @@ export class UsersService {
   }
 
   async findOneById(id: string): Promise<User> {
-    if (!isValidUUID(id)) return null;
-    return this.usersRepository.findOne({
-      where: {
-        id,
+    return this.usersRepository.findOneOrThrow(
+      { id },
+      {
+        select: SELECTED_USER_FIELDS,
       },
+    );
+  }
+
+  async updateById(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    return this.usersRepository.findOneAndUpdateOrThrow({ id }, updateUserDto, {
       select: SELECTED_USER_FIELDS,
     });
   }
 
-  async updateById(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const exists = await this.findOneById(id);
-    if (!exists) {
-      throw new NotFoundException('User not found');
-    }
-    await this.usersRepository.update(id, updateUserDto);
-    return this.findOneById(id);
-  }
-
-  async removeById(id: string): Promise<boolean> {
-    const exists = await this.findOneById(id);
-    if (!exists) {
-      throw new NotFoundException('User not found');
-    }
-    await this.usersRepository.softDelete(id);
-    return true;
+  async removeById(id: string): Promise<User> {
+    return this.usersRepository.findOneAndDeleteOrThrow(
+      { id },
+      {
+        select: SELECTED_USER_FIELDS,
+      },
+    );
   }
 
   async checkExistEmail(email: string): Promise<boolean> {

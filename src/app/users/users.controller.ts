@@ -14,7 +14,6 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUsersDto } from './dto/get-users.dto';
-import { IdParamDto } from 'src/libs/dtos/id-param.dto';
 
 @Controller('users')
 export class UsersController {
@@ -44,7 +43,7 @@ export class UsersController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param() { id }: IdParamDto) {
+  async findOne(@Param('id') id: string) {
     const data = await this.usersService.findOneById(id);
     return {
       statusCode: HttpStatus.OK,
@@ -55,10 +54,7 @@ export class UsersController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async update(
-    @Param() { id }: IdParamDto,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const data = await this.usersService.updateById(id, updateUserDto);
     return {
       statusCode: HttpStatus.OK,
@@ -69,7 +65,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param() { id }: IdParamDto) {
+  async remove(@Param('id') id: string) {
     await this.usersService.removeById(id);
     return {
       statusCode: HttpStatus.NO_CONTENT,
