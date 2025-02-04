@@ -13,10 +13,15 @@ import { SELECTED_USER_FIELDS } from './users.constant';
 import { GetUsersDto } from './dto/get-users.dto';
 import { PaginateData } from 'src/libs/abstract/abstract.repository';
 import { UsersRepository } from './users.repository';
+import { orderedObject } from 'src/libs/utils/common.util';
+import { RedisService } from 'src/libs/modules/redis/redis.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly redisService: RedisService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const isExistEmail = await this.checkExistEmail(createUserDto.email);
@@ -35,6 +40,12 @@ export class UsersService {
   }
 
   async findAll(query: GetUsersDto): Promise<PaginateData<User>> {
+    const cacheKey = `CACHED:USERS:${JSON.stringify(orderedObject(query))}`;
+
+    const cachedData =
+      await this.redisService.get<PaginateData<User>>(cacheKey);
+    if (cachedData) return cachedData;
+
     const filter: FindOptionsWhere<User>[] = [];
 
     if (query.keyword) {
@@ -42,11 +53,14 @@ export class UsersService {
       filter.push({ email: ILike(`%${query.keyword}%`) });
     }
 
-    return this.usersRepository.findAndPaginate({
+    const result = await this.usersRepository.findAndPaginate({
       query,
       where: filter,
       select: SELECTED_USER_FIELDS,
     });
+
+    await this.redisService.set(cacheKey, result, 10000);
+    return result;
   }
 
   async findOneById(id: string): Promise<User> {
