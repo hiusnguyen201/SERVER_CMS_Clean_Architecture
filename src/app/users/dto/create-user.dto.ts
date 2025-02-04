@@ -6,7 +6,8 @@ import {
   IsOptional,
   MinLength,
 } from 'class-validator';
-import { IsVietnamesePhoneNumber } from 'src/core/custom-validator';
+import { IsPhoneNumber } from 'src/libs/validators/phone-number.validator';
+import { PHONE_NUMBER_PATTERNS } from 'src/libs/constant/regex-pattern.constant';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -29,7 +30,7 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   @MaxLength(15)
-  @IsVietnamesePhoneNumber()
+  @IsPhoneNumber(PHONE_NUMBER_PATTERNS.VIETNAMESE)
   phone: string;
 
   @IsOptional()

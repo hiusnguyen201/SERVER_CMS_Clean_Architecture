@@ -1,8 +1,8 @@
-import { BaseEntity } from 'src/core/base.entity';
+import { AbstractEntity } from 'src/libs/abstract/abstract.entity';
 import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'users' })
-export class User extends BaseEntity {
+export class User extends AbstractEntity {
   @Column({ length: 100, nullable: false })
   name: string;
 
