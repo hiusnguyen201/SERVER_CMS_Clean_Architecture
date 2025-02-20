@@ -10,13 +10,8 @@ export class RedisService {
     return value ? (JSON.parse(value) as T) : null;
   }
 
-  public async set(
-    key: string,
-    value: object | string | boolean | number,
-    expire?: number,
-  ): Promise<void> {
-    const stringValue =
-      typeof value === 'object' ? JSON.stringify(value) : String(value);
+  public async set(key: string, value: object | string | boolean | number, expire?: number): Promise<void> {
+    const stringValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
 
     if (expire) {
       await this.redisClient.set(key, stringValue, 'PX', expire); // milliseconds
