@@ -6,4 +6,6 @@ export class UserDITokens {
   public static readonly RemoveUserUseCase: unique symbol = Symbol('RemoveUserUseCase');
 
   public static readonly UserRepository: unique symbol = Symbol('UserRepository');
+
+  public static readonly SendUserPasswordService: unique symbol = Symbol('SendUserPasswordService');
 }

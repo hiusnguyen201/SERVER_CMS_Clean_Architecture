@@ -1,4 +1,4 @@
-import { DataSource, FindManyOptions, FindOneOptions, InsertResult, Repository } from 'typeorm';
+import { DataSource, FindManyOptions, FindOneOptions, FindOptionsWhere, InsertResult, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { UserRepositoryPort } from '@core/domain/user/port/repository/UserRepositoryPort';
@@ -52,5 +52,9 @@ export class TypeOrmUserRepository extends Repository<TypeOrmUser> implements Us
   public async updateUser(user: User): Promise<void> {
     const ormUser: TypeOrmUser = TypeOrmUserMapper.toOrmEntity(user);
     await this.update(ormUser.id, ormUser);
+  }
+
+  public async existUser(where: FindOptionsWhere<TypeOrmUser>): Promise<boolean> {
+    return this.existsBy(where);
   }
 }

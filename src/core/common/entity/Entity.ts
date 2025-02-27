@@ -1,7 +1,8 @@
-import { IsDate, IsOptional, validate, ValidationError } from 'class-validator';
+import { IsDate, IsOptional, ValidationError } from 'class-validator';
 import { Nullable } from '@core/common/type/CommonTypes';
 import { Exception } from '@core/common/exception/Exception';
 import { Code } from '@core/common/code/Code';
+import { ClassValidator } from '@core/common/util/ClassValidator';
 
 export class Entity<TIdentify extends number | string> {
   protected id: TIdentify;
@@ -40,12 +41,9 @@ export class Entity<TIdentify extends number | string> {
   }
 
   public async validate(): Promise<void> {
-    const errors: ValidationError[] = await validate(this);
-    if (errors.length > 0) {
-      throw Exception.new({
-        code: Code.ENTITY_VALIDATION_ERROR,
-        data: errors,
-      });
+    const errors: Nullable<string[]> = await ClassValidator.validate(this);
+    if (errors) {
+      throw Exception.new({ code: Code.ENTITY_VALIDATION_ERROR, data: errors });
     }
   }
 }

@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 export const orderedObject = (obj: Object) => {
   return Object.keys(obj)
     .sort()
@@ -27,3 +29,9 @@ export const sortedStringify = (value: any) => {
       }, {}),
   );
 };
+
+export function generateRandomString(length: number): string {
+  return randomBytes(Math.ceil(length / 2))
+    .toString('hex')
+    .slice(0, length);
+}

@@ -5,7 +5,12 @@ import { UserUseCaseDto } from '@core/domain/user/usecase/dto/UserUseCaseDto';
 import { GetUsersUseCase } from '@core/domain/user/usecase/GetUsersUseCase';
 import { GetUserUseCase } from '@core/domain/user/usecase/GetUserUseCase';
 import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Param, Post } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { HttpRestApiModelCreateUserBody } from '@app/api/http-rest/controller/documentation/user/HttpRestApiModelCreateUserBody copy';
+import { HttpRestApiResponseUser } from '@app/api/http-rest/controller/documentation/user/HttpRestApiResponseUser';
+import { CreateUserAdapter } from '@infrastructure/adapter/user/CreateUserAdapter';
 
+@ApiTags('users')
 @Controller('users')
 export class UserController {
   constructor(
@@ -19,21 +24,32 @@ export class UserController {
     private readonly getUsersUseCase: GetUsersUseCase,
   ) {}
 
-  @Post()
+  @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async createUser(@Body() body: any) {
-    const createdUser: UserUseCaseDto = await this.createUserUseCase.execute(body);
+  @ApiBearerAuth()
+  @ApiBody({ type: HttpRestApiModelCreateUserBody })
+  @ApiResponse({ status: HttpStatus.CREATED, type: HttpRestApiResponseUser })
+  async createUser(@Body() body: HttpRestApiModelCreateUserBody): Promise<CoreApiResponse<UserUseCaseDto>> {
+    const adapter: CreateUserAdapter = await CreateUserAdapter.new({
+      name: body.name,
+      email: body.email,
+      address: body.address,
+      phone: body.phone,
+      typeId: body.typeId,
+    });
+
+    const createdUser: UserUseCaseDto = await this.createUserUseCase.execute(adapter);
     return CoreApiResponse.success(createdUser);
   }
 
-  @Get()
+  @Get('/')
   @HttpCode(HttpStatus.OK)
   async getUsers() {
     const users: UserUseCaseDto[] = await this.getUsersUseCase.execute();
     return CoreApiResponse.success(users);
   }
 
-  @Get(':userId')
+  @Get('/:userId')
   @HttpCode(HttpStatus.OK)
   async getUser(@Param('userId') userId: string) {
     const user: UserUseCaseDto = await this.getUserUseCase.execute({ userId });

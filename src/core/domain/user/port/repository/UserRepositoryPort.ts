@@ -1,7 +1,7 @@
 import { Nullable } from '@core/common/type/CommonTypes';
 import { User } from '@core/domain/user/entity/User';
 import { TypeOrmUser } from '@infrastructure/persistence/typeorm/entity/user/TypeOrmUser';
-import { FindManyOptions, FindOneOptions } from 'typeorm';
+import { FindManyOptions, FindOneOptions, FindOptionsWhere } from 'typeorm';
 
 export interface UserRepositoryPort {
   findUser(options: FindOneOptions<TypeOrmUser>): Promise<Nullable<User>>;
@@ -13,4 +13,6 @@ export interface UserRepositoryPort {
   addUser(user: User): Promise<{ id: string }>;
 
   updateUser(user: User): Promise<void>;
+
+  existUser(where: FindOptionsWhere<TypeOrmUser>): Promise<boolean>;
 }

@@ -3,7 +3,7 @@ export type CreateUserEntityPayload = {
   name: string;
   email: string;
   password: string;
-  phone?: string;
+  phone: string;
   address?: string;
   isVerified: boolean;
   verifiedAt?: Date;

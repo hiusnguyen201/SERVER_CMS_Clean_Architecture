@@ -1,6 +1,8 @@
 import { get } from 'env-var';
 
 export class ApiServerConfig {
+  public static readonly SERVER_NAME: string = get('SERVER_NAME').required().asString();
+
   public static readonly API_HOST: string = get('API_HOST').required().asString();
 
   public static readonly API_PORT: number = get('API_PORT').required().asPortNumber();

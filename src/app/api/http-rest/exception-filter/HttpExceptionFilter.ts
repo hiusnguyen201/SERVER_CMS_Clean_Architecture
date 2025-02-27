@@ -21,7 +21,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       Logger.error(message);
     }
 
-    response.status(errorResponse.code / 100).json(errorResponse);
+    response.status(Math.floor(errorResponse.code / 100)).json(errorResponse);
   }
 
   private handleNestError(error: Error, errorResponse: CoreApiResponse<unknown>) {

@@ -6,6 +6,14 @@ import { CreateUserService } from '@core/service/user/usecase/CreateUserService'
 import { TypeOrmUserRepository } from '@infrastructure/persistence/typeorm/repository/user/TypeOrmUserRepository';
 import { GetUserService } from '@core/service/user/usecase/GetUserService';
 import { GetUsersService } from '@core/service/user/usecase/GetUsersService';
+import { NodemailerService } from '@infrastructure/persistence/nodemailer/service/NodemailerService';
+
+const infrastructureProviders: Provider[] = [
+  {
+    provide: UserDITokens.SendUserPasswordService,
+    useClass: NodemailerService,
+  },
+];
 
 const persistenceProviders: Provider[] = [
   {
@@ -18,8 +26,9 @@ const persistenceProviders: Provider[] = [
 const useCaseProviders: Provider[] = [
   {
     provide: UserDITokens.CreateUserUseCase,
-    useFactory: (userRepository: TypeOrmUserRepository) => new CreateUserService(userRepository),
-    inject: [UserDITokens.UserRepository],
+    useFactory: (userRepository: TypeOrmUserRepository, mailerService: NodemailerService) =>
+      new CreateUserService(userRepository, mailerService),
+    inject: [UserDITokens.UserRepository, UserDITokens.SendUserPasswordService],
   },
   {
     provide: UserDITokens.GetUsersUseCase,
@@ -35,6 +44,6 @@ const useCaseProviders: Provider[] = [
 
 @Module({
   controllers: [UserController],
-  providers: [...persistenceProviders, ...useCaseProviders],
+  providers: [...persistenceProviders, ...useCaseProviders, ...infrastructureProviders],
 })
 export class UserModule {}

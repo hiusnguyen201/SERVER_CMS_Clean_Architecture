@@ -19,6 +19,11 @@ export class Code {
     message: 'Entity validation error',
   };
 
+  public static USE_CASE_PORT_VALIDATION_ERROR: CodeDescription = {
+    code: 40003,
+    message: 'Use-case port validation error',
+  };
+
   public static UNAUTHORIZED: CodeDescription = {
     code: 40101,
     message: 'Unauthorized',
@@ -37,6 +42,11 @@ export class Code {
   public static ENTITY_NOT_FOUND: CodeDescription = {
     code: 40401,
     message: 'Entity not found',
+  };
+
+  public static TEMPLATE_FILE_NOT_FOUND: CodeDescription = {
+    code: 40402,
+    message: 'Template file not found',
   };
 
   public static ENTITY_ALREADY_EXISTS: CodeDescription = {
