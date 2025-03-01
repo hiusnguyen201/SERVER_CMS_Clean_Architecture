@@ -5,57 +5,57 @@ export type CodeDescription = {
 
 export class Code {
   public static SUCCESS: CodeDescription = {
-    code: 20001,
+    code: 200,
     message: 'Success',
   };
 
   public static BAD_REQUEST: CodeDescription = {
-    code: 40001,
+    code: 400,
     message: 'Bad request',
   };
 
   public static ENTITY_VALIDATION_ERROR: CodeDescription = {
-    code: 40002,
+    code: 400,
     message: 'Entity validation error',
   };
 
   public static USE_CASE_PORT_VALIDATION_ERROR: CodeDescription = {
-    code: 40003,
+    code: 400,
     message: 'Use-case port validation error',
   };
 
   public static UNAUTHORIZED: CodeDescription = {
-    code: 40101,
+    code: 401,
     message: 'Unauthorized',
   };
 
   public static WRONG_CREDENTIALS: CodeDescription = {
-    code: 40102,
+    code: 401,
     message: 'Wrong credentials',
   };
 
   public static ACCESS_DENIED: CodeDescription = {
-    code: 40301,
+    code: 403,
     message: 'Access denied',
   };
 
   public static ENTITY_NOT_FOUND: CodeDescription = {
-    code: 40401,
+    code: 404,
     message: 'Entity not found',
   };
 
   public static TEMPLATE_FILE_NOT_FOUND: CodeDescription = {
-    code: 40402,
+    code: 404,
     message: 'Template file not found',
   };
 
   public static ENTITY_ALREADY_EXISTS: CodeDescription = {
-    code: 40901,
+    code: 409,
     message: 'Entity already exists',
   };
 
   public static INTERNAL_SERVER_ERROR: CodeDescription = {
-    code: 50001,
+    code: 500,
     message: 'Internal server error',
   };
 }

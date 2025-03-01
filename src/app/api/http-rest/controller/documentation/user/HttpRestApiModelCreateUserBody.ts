@@ -1,18 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class HttpRestApiModelCreateUserBody {
-  @ApiProperty()
+  @ApiProperty({ required: true })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: true })
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   phone: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   address: string;
-
-  @ApiProperty()
-  typeId: string;
 }

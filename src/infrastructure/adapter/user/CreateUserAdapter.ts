@@ -23,11 +23,6 @@ export class CreateUserAdapter extends UseCaseValidatableAdapter {
   @IsString()
   public address: string;
 
-  @Expose()
-  @IsOptional()
-  @IsString()
-  public typeId: string;
-
   public static async new(payload: CreateUserPort) {
     const adapter: CreateUserAdapter = plainToClass(CreateUserAdapter, payload);
     await adapter.validate();

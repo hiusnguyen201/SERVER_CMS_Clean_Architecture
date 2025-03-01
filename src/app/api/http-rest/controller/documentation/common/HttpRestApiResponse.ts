@@ -9,7 +9,4 @@ export class HttpRestApiResponse {
 
   @ApiProperty({ description: 'timestamp in ms', type: 'number' })
   public timestamp: number;
-
-  @ApiProperty({ type: 'object', additionalProperties: true })
-  public data: unknown;
 }

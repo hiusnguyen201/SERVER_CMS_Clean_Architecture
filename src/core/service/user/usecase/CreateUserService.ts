@@ -2,7 +2,7 @@ import { CoreAssert } from '@core/common/assert/CoreAssert';
 import { Code } from '@core/common/code/Code';
 import { Exception } from '@core/common/exception/Exception';
 import { generateRandomString } from '@core/common/util/common.util';
-import { UserConstant } from '@core/domain/user/constant/UserConstant';
+import { USER_TYPE, UserConstant } from '@core/domain/user/constant/UserConstant';
 import { User } from '@core/domain/user/entity/User';
 import { UserRepositoryPort } from '@core/domain/user/port/repository/UserRepositoryPort';
 import { MailerServicePort } from '@core/domain/user/port/service/MailerServicePort';
@@ -27,6 +27,7 @@ export class CreateUserService implements CreateUserUseCase {
       password: password,
       phone: payload.phone,
       address: payload.address,
+      type: USER_TYPE.USER,
       isVerified: false,
     });
 

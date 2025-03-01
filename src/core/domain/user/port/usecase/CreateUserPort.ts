@@ -3,5 +3,4 @@ export interface CreateUserPort {
   email: string;
   phone: string;
   address?: string;
-  typeId?: string;
 }

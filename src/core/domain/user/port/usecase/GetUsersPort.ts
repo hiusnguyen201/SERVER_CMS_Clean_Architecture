@@ -1,3 +1,9 @@
-import { GetEntitiesPort } from '@core/common/port/usecase/GetEntitiesPort';
+export interface GetUsersPort {
+  keyword?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: string;
 
-export interface GetUsersPort extends GetEntitiesPort {}
+  isVerified?: boolean;
+}

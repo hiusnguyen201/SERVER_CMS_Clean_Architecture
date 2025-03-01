@@ -20,11 +20,16 @@ export class HttpRestApiModelUser {
   public isVerified: boolean;
 
   @ApiProperty()
-  public typeId: string;
-
-  @ApiProperty()
   public createdAt: Date;
 
   @ApiProperty()
   public editedAt: Date;
+}
+
+export class HttpRestApiModelUsers {
+  @ApiProperty()
+  public totalCount: number;
+
+  @ApiProperty({ type: [HttpRestApiModelUser] })
+  public list: HttpRestApiModelUser[];
 }

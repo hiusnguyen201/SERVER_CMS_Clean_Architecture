@@ -11,6 +11,7 @@ export class TypeOrmUserMapper {
     ormUser.password = domainUser.getPassword();
     ormUser.phone = domainUser.getPhone();
     ormUser.address = domainUser.getAddress();
+    ormUser.type = domainUser.getType();
     ormUser.isVerified = domainUser.getIsVerified();
     ormUser.verifiedAt = domainUser.getVerifiedAt();
 
@@ -33,6 +34,7 @@ export class TypeOrmUserMapper {
       password: ormUser.password,
       phone: ormUser.phone,
       address: ormUser.address,
+      type: ormUser.type,
       isVerified: ormUser.isVerified,
       verifiedAt: ormUser.verifiedAt,
       createdAt: ormUser.createdAt,

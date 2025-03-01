@@ -1,32 +1,31 @@
-import { CoreAssert } from '@core/common/assert/CoreAssert';
-import { Code } from '@core/common/code/Code';
-import { Exception } from '@core/common/exception/Exception';
 import { User } from '@core/domain/user/entity/User';
 import { UserRepositoryPort } from '@core/domain/user/port/repository/UserRepositoryPort';
 import { GetUsersPort } from '@core/domain/user/port/usecase/GetUsersPort';
 import { GetUsersUseCase } from '@core/domain/user/usecase/GetUsersUseCase';
 import { UserUseCaseDto } from '@core/domain/user/usecase/dto/UserUseCaseDto';
-import { Like } from 'typeorm';
+import { TypeOrmUser } from '@infrastructure/persistence/typeorm/entity/user/TypeOrmUser';
+import { FindOptionsWhere, Like } from 'typeorm';
 
 export class GetUsersService implements GetUsersUseCase {
   constructor(private readonly userRepository: UserRepositoryPort) {}
 
-  public async execute(payload: GetUsersPort): Promise<UserUseCaseDto[]> {
+  public async execute(payload: GetUsersPort): Promise<{ totalCount: number; list: UserUseCaseDto[] }> {
+    const filters: FindOptionsWhere<TypeOrmUser>[] = [
+      { name: Like(`%${payload.keyword}%`) },
+      { email: Like(`%${payload.keyword}%`) },
+      { phone: Like(`%${payload.keyword}%`) },
+    ];
+
+    const totalCount: number = await this.userRepository.countUsers({ where: filters });
+
+    const skip: number = (payload.page - 1) * payload.limit;
     const users: User[] = await this.userRepository.findUsers({
-      where: [
-        { name: Like(`%${payload.keyword}%`) },
-        { email: Like(`%${payload.keyword}%`) },
-        { phone: Like(`%${payload.keyword}%`) },
-      ],
+      where: filters,
       take: payload.limit,
-      skip: (payload.page - 1) * payload.limit,
+      skip: skip,
+      order: { [payload.sortBy]: payload.sortOrder },
     });
 
-    CoreAssert.isTrue(
-      users.length > 0,
-      Exception.new({ code: Code.ENTITY_NOT_FOUND, overrideMessage: 'User not found' }),
-    );
-
-    return UserUseCaseDto.newListFromUsers(users);
+    return { totalCount: totalCount, list: UserUseCaseDto.newListFromUsers(users) };
   }
 }

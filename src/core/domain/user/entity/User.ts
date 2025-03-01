@@ -1,11 +1,12 @@
+import { IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
+import { compare, genSalt, hash } from 'bcrypt';
+import { v4 } from 'uuid';
 import { Entity } from '@core/common/entity/Entity';
 import { RemovableEntity } from '@core/common/entity/RemovableEntity';
 import { Nullable } from '@core/common/type/CommonTypes';
-import { IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
-import { CreateUserEntityPayload } from './type/CreateUserEntityPayload';
-import { v4 } from 'uuid';
-import { compare, genSalt, hash } from 'bcrypt';
-import { EditUserEntityPayload } from './type/EditUserEntityPayload';
+import { CreateUserEntityPayload } from '@core/domain/user/entity/type/CreateUserEntityPayload';
+import { EditUserEntityPayload } from '@core/domain/user/entity/type/EditUserEntityPayload';
+import { USER_TYPE } from '@core/domain/user/constant/UserConstant';
 
 export class User extends Entity<string> implements RemovableEntity {
   @IsString()
@@ -24,6 +25,9 @@ export class User extends Entity<string> implements RemovableEntity {
   @IsOptional()
   @IsString()
   private address: Nullable<string>;
+
+  @IsString()
+  private type: USER_TYPE;
 
   @IsBoolean()
   private isVerified: boolean;
@@ -44,6 +48,7 @@ export class User extends Entity<string> implements RemovableEntity {
     this.password = payload.password;
     this.phone = payload.phone || null;
     this.address = payload.address || null;
+    this.type = payload.type;
     this.isVerified = payload.isVerified || false;
     this.verifiedAt = payload.verifiedAt || null;
     this.createdAt = payload.createdAt || new Date();
@@ -61,6 +66,10 @@ export class User extends Entity<string> implements RemovableEntity {
 
   public getPassword() {
     return this.password;
+  }
+
+  public getType() {
+    return this.type;
   }
 
   public getPhone() {

@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-
+import { USER_TYPE } from '@core/domain/user/constant/UserConstant';
 @Entity('users')
 export class TypeOrmUser {
   @PrimaryColumn('uuid')
@@ -19,6 +19,9 @@ export class TypeOrmUser {
 
   @Column({ length: 200, nullable: true })
   public address: string;
+
+  @Column({ nullable: false })
+  public type: USER_TYPE;
 
   @Column({ nullable: false })
   public isVerified: boolean;
